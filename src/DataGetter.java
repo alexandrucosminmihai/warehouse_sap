@@ -49,7 +49,84 @@ public class DataGetter {
 
     public static final boolean PRINT_RAW_CONTENT = true;
 
-    public static void main(String[] paras) throws Exception {
+    public static ODataFeed getEntriesFeed(String entityType, HashMap<String, String> args) throws Exception {
+        Authenticator authenticator = new Authenticator() {
+            public PasswordAuthentication getPasswordAuthentication() {
+                return (new PasswordAuthentication("TEAM04_USER",
+                        "04TheBestRunSap@2018!".toCharArray()));
+            }
+        };
+        Authenticator.setDefault(authenticator);
+
+        String serviceUrl = "https://thebestrunsap2018z3d3pet6df.hana.ondemand.com" +
+                "/ro/sap/hackathon/team04/service.xsodata/";
+        String usedFormat = APPLICATION_JSON;
+
+
+        DataGetter app = new DataGetter();
+
+        Edm edm = app.readEdm(serviceUrl);
+        print("Read default EntityContainer: " + edm.getDefaultEntityContainer().getName());
+
+        // Creaza obiectul feed de intrari de tipul dat ca parametru, incepand de la intrarea skip + 1,
+        // luand urmatoarele top intrari
+        ODataFeed feed = app.readFeed(edm, serviceUrl, usedFormat, entityType, args);
+
+        return feed;
+    }
+
+    public static ODataFeed getEntriesFeed(String entityType, String skip, String top) throws Exception {
+        Authenticator authenticator = new Authenticator() {
+            public PasswordAuthentication getPasswordAuthentication() {
+                return (new PasswordAuthentication("TEAM04_USER",
+                        "04TheBestRunSap@2018!".toCharArray()));
+            }
+        };
+        Authenticator.setDefault(authenticator);
+
+        String serviceUrl = "https://thebestrunsap2018z3d3pet6df.hana.ondemand.com" +
+                "/ro/sap/hackathon/team04/service.xsodata/";
+        String usedFormat = APPLICATION_JSON;
+
+
+        DataGetter app = new DataGetter();
+
+        Edm edm = app.readEdm(serviceUrl);
+        print("Read default EntityContainer: " + edm.getDefaultEntityContainer().getName());
+
+        // Creaza obiectul feed de intrari de tipul dat ca parametru, incepand de la intrarea skip + 1,
+        // luand urmatoarele top intrari
+        ODataFeed feed = app.readFeed(edm, serviceUrl, usedFormat, entityType, skip, top);
+
+        return feed;
+    }
+
+    public static ODataFeed getEntriesFeed(String entityType) throws Exception {
+        Authenticator authenticator = new Authenticator() {
+            public PasswordAuthentication getPasswordAuthentication() {
+                return (new PasswordAuthentication("TEAM04_USER",
+                        "04TheBestRunSap@2018!".toCharArray()));
+            }
+        };
+        Authenticator.setDefault(authenticator);
+
+        String serviceUrl = "https://thebestrunsap2018z3d3pet6df.hana.ondemand.com" +
+                "/ro/sap/hackathon/team04/service.xsodata/";
+        String usedFormat = APPLICATION_JSON;
+
+
+        DataGetter app = new DataGetter();
+
+        Edm edm = app.readEdm(serviceUrl);
+        print("Read default EntityContainer: " + edm.getDefaultEntityContainer().getName());
+
+        // Creaza obiectul feed de intrari de tipul dat ca parametru
+        ODataFeed feed = app.readFeed(edm, serviceUrl, usedFormat, entityType);
+
+        return feed;
+    }
+
+    public static void printAllEntries(String[] paras) throws Exception {
 
         Authenticator authenticator = new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
@@ -204,6 +281,22 @@ public class DataGetter {
         */
     }
 
+    public static void main(String[] args) throws Exception{
+        // Aici doar testez daca functiile merg bine
+        System.out.println("!!!!!!!!!!!!!!!!Print all entries:");
+        printAllEntries(args);
+        System.out.println("!!!!!!!!!!!!!!!!End of print all entries");
+
+        System.out.println("!!!!!!!!!!!!!!!!Print all Article entries");
+        ODataFeed feed = getEntriesFeed("Article");
+        for (ODataEntry entry : feed.getEntries()) {
+            prettyPrint(entry);
+            System.out.println("Am creat feedul de Article, si am printat un Entry");
+            break;
+        }
+        System.out.println("!!!!!!!!!!!!!!!!End of print all Article entries");
+    }
+
     private static void print(String content) {
         System.out.println(content);
     }
@@ -265,6 +358,30 @@ public class DataGetter {
     public Edm readEdm(String serviceUrl) throws IOException, ODataException {
         InputStream content = execute(serviceUrl + SEPARATOR + METADATA, APPLICATION_XML, HTTP_METHOD_GET);
         return EntityProvider.readMetadata(content, false);
+    }
+
+    public ODataFeed readFeed(Edm edm, String serviceUri, String contentType, String entitySetName, HashMap<String, String> args)
+            throws IOException, ODataException {
+        EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
+        String absolutUri = createUri(serviceUri, entitySetName, null, args);
+
+        InputStream content = execute(absolutUri, contentType, HTTP_METHOD_GET);
+        return EntityProvider.readFeed(contentType,
+                entityContainer.getEntitySet(entitySetName),
+                content,
+                EntityProviderReadProperties.init().build());
+    }
+
+    public ODataFeed readFeed(Edm edm, String serviceUri, String contentType, String entitySetName, String skip, String top)
+            throws IOException, ODataException {
+        EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
+        String absolutUri = createUri(serviceUri, entitySetName, null, skip, top);
+
+        InputStream content = execute(absolutUri, contentType, HTTP_METHOD_GET);
+        return EntityProvider.readFeed(contentType,
+                entityContainer.getEntitySet(entitySetName),
+                content,
+                EntityProviderReadProperties.init().build());
     }
 
     public ODataFeed readFeed(Edm edm, String serviceUri, String contentType, String entitySetName, String top)
@@ -405,7 +522,33 @@ public class DataGetter {
     }
 
     private String createUri(String serviceUri, String entitySetName, String id) {
-        return createUri(serviceUri, entitySetName, id, null);
+        return createUri(serviceUri, entitySetName, id, (String)null);
+    }
+
+    private String createUri(String serviceUri, String entitySetName, String id, HashMap<String, String> args) {
+        final StringBuilder absolutUri = new StringBuilder(serviceUri).append(SEPARATOR).append(entitySetName);
+        if(id != null) {
+            absolutUri.append("(").append(id).append(")");
+        }
+
+        for (Entry<String, String> arg : args.entrySet()) {
+            absolutUri.append("/?&" + arg.getKey() + "=").append(arg.getValue());
+        }
+        return absolutUri.toString();
+    }
+
+    private String createUri(String serviceUri, String entitySetName, String id, String skip, String top) {
+        final StringBuilder absolutUri = new StringBuilder(serviceUri).append(SEPARATOR).append(entitySetName);
+        if(id != null) {
+            absolutUri.append("(").append(id).append(")");
+        }
+        if (skip != null) {
+            absolutUri.append("/?$skip=").append(skip);
+        }
+        if(top != null) {
+            absolutUri.append("/?$top=").append(top);
+        }
+        return absolutUri.toString();
     }
 
     private String createUri(String serviceUri, String entitySetName, String id, String top) {
