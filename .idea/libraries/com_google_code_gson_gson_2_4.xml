@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="com.google.code.gson-gson-2.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/com.google.code.gson-gson-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/commons-codec-commons-codec-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/javax.ws.rs-javax.ws.rs-api-2.0-m10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/org.apache.olingo-olingo-odata2-api-2.0.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/org.apache.olingo-olingo-odata2-api-annotation-2.0.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/org.apache.olingo-olingo-odata2-core-2.0.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
