@@ -10,6 +10,13 @@ public class Article {
     public BigDecimal singleUnitVolume;
     public BigDecimal palleteVolume;
 
+    public Integer minQuantity;
+    public Integer maxQuantity;
+    public Integer maxCapacity;
+    public Integer currentQuantity;
+
+    public Article() {}
+
     public Article(
             String code, Integer palletQuantity, BigDecimal singleUnitWeight,
             BigDecimal palletWeight, BigDecimal singleUnitVolume,

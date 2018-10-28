@@ -1,6 +1,9 @@
 package Entities;
 
+import Entities.Article;
+
 import java.math.BigDecimal;
+import java.util.TreeMap;
 
 public class StorageUnit {
     public String     code;
@@ -8,6 +11,8 @@ public class StorageUnit {
     public Integer    capacity;
     public Integer    maxWeight;
     public BigDecimal maxVolume;
+
+    public TreeMap<String, Article> articles;
 
     public StorageUnit(
             String code, String area, Integer capacity, Integer maxWeight,
@@ -17,5 +22,7 @@ public class StorageUnit {
         this.capacity = capacity;
         this.maxWeight = maxWeight;
         this.maxVolume = maxVolume;
+
+        articles = new TreeMap<>();
     }
 }

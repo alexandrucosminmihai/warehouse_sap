@@ -7,16 +7,16 @@ public class Main {
         /* Get data. */
         application.getArticles();
 
-        application.getTransportationNetworks();
+        application.getStorageUnits();
 
         application.getStocks();
 
+        application.getTransportationNetworks();
+
         application.getStockRules();
 
-        application.getStorageAreas();
-
-//        application.getDeliveries();
-
         application.visualizeStorageUnits();
+
+        application.simulate();
     }
 }
