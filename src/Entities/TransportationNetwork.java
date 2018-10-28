@@ -1,7 +1,15 @@
 package Entities;
 
 public class TransportationNetwork {
-    String sourceAreaCode;  // de unde pleaca
-    String destinationAreaCode;  // unde ajunge
-    double moveTime; // cad dureaza
+    public String  sourceAreaCode;
+    public String  destinationAreaCode;
+    public Integer moveTime;
+
+    public TransportationNetwork(
+            String sourceAreaCode, String destinationAreaCode,
+            Integer moveTime) {
+        this.sourceAreaCode = sourceAreaCode;
+        this.destinationAreaCode = destinationAreaCode;
+        this.moveTime = moveTime;
+    }
 }

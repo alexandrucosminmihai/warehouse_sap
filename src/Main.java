@@ -1,7 +1,22 @@
 public class Main {
 
-    public static void main(String[] args) {
-	// write your code here
-        System.out.println("Salutare, baieti!");
+    /* Here starts the processing. */
+    public static void main(String[] args) throws Exception {
+        Application application = new Application();
+
+        /* Get data. */
+        application.getArticles();
+
+        application.getTransportationNetworks();
+
+        application.getStocks();
+
+        application.getStockRules();
+
+        application.getStorageAreas();
+
+//        application.getDeliveries();
+
+        application.visualizeStorageUnits();
     }
 }
